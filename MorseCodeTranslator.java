@@ -2,14 +2,10 @@ package MorseCode;
 
 import java.util.HashMap;
 
-// Klass som översätter mellan text och Morse-kod (endast bokstäver A-Z).
-// Korta signaler representeras med punkt (.) och långa med bindestreck (-).
-// Mellanslag ignoreras (inga ordseparationer).
 public class MorseCodeTranslator {
     private static final HashMap<Character, String> englishToMorse = new HashMap<>();
     private static final HashMap<String, Character> morseToEnglish = new HashMap<>();
 
-    // Initierar översättningstabellerna med internationell morsekod för bokstäverna A-Z.
     static {
         String[][] morseArray = {
                 {"A", ".-"}, {"B", "-..."}, {"C", "-.-."}, {"D", "-.."},
@@ -29,26 +25,38 @@ public class MorseCodeTranslator {
         }
     }
 
-    // Översätter text till Morse-kod. Endast bokstäver A-Z översätts.
+    // Översätter text till Morse-kod
     public static String toMorse(String text) {
+        if (text == null || text.isEmpty()) {
+            return "Fel: Ingen text angiven!";
+        }
+
         StringBuilder morse = new StringBuilder();
         text = text.toUpperCase();
+
         for (char c : text.toCharArray()) {
-            if (englishToMorse.containsKey(c)) {
-                morse.append(englishToMorse.get(c)).append(" ");
+            if (!englishToMorse.containsKey(c)) {
+                return "Fel: Ogiltigt tecken '" + c + "'! Endast bokstäver A-Z stöds.";
             }
+            morse.append(englishToMorse.get(c)).append(" ");
         }
         return morse.toString().trim();
     }
 
-    // Översätter Morse-kod till text. Varje kod (bokstav) måste vara separerad med ett mellanslag.
+    // Översätter Morse-kod till text
     public static String toEnglish(String morse) {
+        if (morse == null || morse.isEmpty()) {
+            return "Fel: Ingen Morse-kod angiven!";
+        }
+
         StringBuilder text = new StringBuilder();
         String[] tokens = morse.split(" ");
+
         for (String token : tokens) {
-            if (morseToEnglish.containsKey(token)) {
-                text.append(morseToEnglish.get(token));
+            if (!morseToEnglish.containsKey(token)) {
+                return "Fel: Ogiltig Morse-kod '" + token + "'!";
             }
+            text.append(morseToEnglish.get(token));
         }
         return text.toString();
     }
